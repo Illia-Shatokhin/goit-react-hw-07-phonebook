@@ -5,10 +5,14 @@ import { PhonebookForm } from './phonebook-form/PhonebookForm';
 import { LabelInput } from './label-input/LabelInput';
 import { filterChange } from 'redux/filterSlice';
 import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchContactsThunk } from 'redux/operations';
 
 export const App = () => {
   const dispatch = useDispatch();
-
+  useEffect(() => {
+    dispatch(fetchContactsThunk());
+  }, [dispatch]);
   return (
     <div className={css.container}>
       <HeadText title="Phonebook" />

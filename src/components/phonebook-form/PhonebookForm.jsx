@@ -1,8 +1,8 @@
 import css from './PhonebookForm.module.css';
 import { LabelInput } from 'components/label-input/LabelInput';
 import { Button } from 'components/button/Button';
-import { addContact } from 'redux/contactsSlice';
 import { useDispatch } from 'react-redux';
+import { addContactThunk } from 'redux/operations';
 
 export const PhonebookForm = () => {
   const dispatch = useDispatch();
@@ -10,8 +10,11 @@ export const PhonebookForm = () => {
   const handleSubmit = event => {
     event.preventDefault();
     const form = event.target;
-    const contactData = [form.elements.name.value, form.elements.number.value];
-    dispatch(addContact(contactData));
+    const contactData = {
+      name: form.elements.name.value,
+      phone: form.elements.number.value,
+    };
+    dispatch(addContactThunk(contactData));
     form.reset();
   };
 

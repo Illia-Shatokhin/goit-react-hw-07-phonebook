@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 export const ContactListItem = ({ contact, children }) => {
   return (
     <li className={css.listItem}>
-      {contact.name} : {contact.number} {children}
+      {contact.name} : {contact.phone} {children}
     </li>
   );
 };

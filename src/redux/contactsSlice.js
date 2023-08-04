@@ -1,39 +1,61 @@
-import { nanoid } from 'nanoid';
+import {
+  addContactThunk,
+  deleteContactThunk,
+  fetchContactsThunk,
+} from './operations';
 
 const { createSlice } = require('@reduxjs/toolkit');
 
 const contactsInitialState = {
-  contacts: [
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ],
+  contacts: [],
+  isLoading: false,
+  error: null,
 };
 
 const contactsSlice = createSlice({
   name: 'contacts',
   initialState: contactsInitialState,
-  reducers: {
-    addContact: {
-      reducer(state, { payload }) {
+  extraReducers: builder =>
+    builder
+      .addCase(fetchContactsThunk.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchContactsThunk.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.contacts = action.payload;
+      })
+      .addCase(fetchContactsThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(addContactThunk.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(addContactThunk.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
         state.contacts.push(payload);
-      },
-      prepare(arr) {
-        return {
-          payload: {
-            id: nanoid(),
-            name: arr[0],
-            number: arr[1],
-          },
-        };
-      },
-    },
-    deleteContact(state, { payload }) {
-      const index = state.contacts.findIndex(contact => contact.id === payload);
-      state.contacts.splice(index, 1);
-    },
-  },
+      })
+      .addCase(addContactThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteContactThunk.pending, state => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(deleteContactThunk.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        const index = state.contacts.findIndex(
+          contact => contact.id === payload.id
+        );
+        state.contacts.splice(index, 1);
+      })
+      .addCase(deleteContactThunk.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      }),
 });
 
 export const { addContact, deleteContact } = contactsSlice.actions;

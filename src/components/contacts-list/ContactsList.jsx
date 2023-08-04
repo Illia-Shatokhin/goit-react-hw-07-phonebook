@@ -2,26 +2,21 @@ import { ContactListItem } from 'components/contact-list-item/ContactsListItem';
 import css from './ContactsList.module.css';
 import { Button } from 'components/button/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { getContacts, getFilter } from 'redux/selectors';
+import { selectFilter } from 'redux/selectors';
 import { NoContactsMessage } from 'components/noContactsMessage/noContactsMessage';
 import { deleteContactThunk } from 'redux/operations';
+import { selectFilteredContacts } from '../../redux/selectors';
 
 export const ContactsList = () => {
-  const { contacts } = useSelector(getContacts);
-  const { filter } = useSelector(getFilter);
+  const contacts = useSelector(selectFilteredContacts);
+  const { filter } = useSelector(selectFilter);
 
   const dispatch = useDispatch();
 
-  const filteredContacts = () => {
-    return contacts.filter(({ name }) => {
-      return name.toLowerCase().startsWith(filter.toLowerCase());
-    });
-  };
-
   return (
     <ul className={css.list}>
-      {filteredContacts().length ? (
-        filteredContacts().map(contact => (
+      {contacts.length ? (
+        contacts.map(contact => (
           <ContactListItem key={contact.id} contact={contact}>
             <Button
               type="button"
